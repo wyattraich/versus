@@ -1,0 +1,42 @@
+ganache-cli    | Available Accounts
+ganache-cli    | ==================
+ganache-cli    | (0) 0x551A337Dac1C57BFD70d1c52f828dCe74875B0Bc (100 ETH)
+ganache-cli    | (1) 0x245084a432903fC6b9220F09Bc728FB28bBC0baF (100 ETH)
+ganache-cli    | (2) 0x91eb9c67E6aB0c4b18f6d0de82A360A304f395f1 (100 ETH)
+ganache-cli    | (3) 0x1A9E282b0ba69653C91F2b46351b51279C2C0Cf8 (100 ETH)
+ganache-cli    | (4) 0x778A197d1518eAaB517b8c370a0cFe6F0746B05A (100 ETH)
+ganache-cli    | (5) 0x9C699adDd5525c9bEe86323CA91bBc661105C75D (100 ETH)
+ganache-cli    | (6) 0x4AaF86D1F94dA5aC94CBB846BDC18e25Fd09Ee45 (100 ETH)
+ganache-cli    | (7) 0x71bE0beED73A9AB99657113cf8fb25F518b7889f (100 ETH)
+ganache-cli    | (8) 0x992Ae17126d5f1F9E789Ad4183FF90c50436188A (100 ETH)
+ganache-cli    | (9) 0x10F6e1E0895970cBAfaE8D51123349CeB63bFb41 (100 ETH)
+ganache-cli    |
+ganache-cli    | Private Keys
+ganache-cli    | ==================
+ganache-cli    | (0) 0xa80733d8dabbf74ead689d4739a888afe67fc7cc01313649d7aa13e6f42a477a
+ganache-cli    | (1) 0xadd71d0e48b6d6fb4d02556034dc2201e5c69b4ab18dc7544fe13d622cea314c
+ganache-cli    | (2) 0x78040f6d3dc2fc76225a90643ad75ce5b5883a84d9ddda1cd6247eb37bb474f7
+ganache-cli    | (3) 0xf48c3e49532d9fe05ddc87d52e1eff3bd8f54b93d90130f7f3b51487a0de7194
+ganache-cli    | (4) 0xd1cfc58b207f7058cff9606f43b644339e20f4ffaadcf6a0a0f2d076ab60889e
+ganache-cli    | (5) 0x6315a8ab88e930aeb0de3346d5daad1b014e99a67d20751ee83cd5037a587aa6
+ganache-cli    | (6) 0xbf1d4be2aadd4b78d69f806a392aabc387728d8c42c92b52acf6d945609d75e5
+ganache-cli    | (7) 0x0265c19365c7f9d6db403a061d64c32c2757313309f2ece2ade83d70cef04421
+ganache-cli    | (8) 0x91b0a35c51a651ceb382410920ae153ffd4d5e0b6a1358888307eb03ecc34f45
+ganache-cli    | (9) 0x7711c0f256419743ecd7368f545fb3a7a80b7fba7df1df963fad46563d9e2e8a
+ganache-cli    |
+ganache-cli    | HD Wallet
+ganache-cli    | ==================
+ganache-cli    | Mnemonic:      faith trust cushion pelican absurd educate dismiss demand about panda skull amazing
+ganache-cli    | Base HD Path:  m/44'/60'/0'/0/{account_index}
+ganache-cli    |
+ganache-cli    | Gas Price
+ganache-cli    | ==================
+ganache-cli    | 20000000000
+ganache-cli    |
+ganache-cli    | Gas Limit
+ganache-cli    | ==================
+ganache-cli    | 6721975
+ganache-cli    |
+ganache-cli    | Call Gas Limit
+ganache-cli    | ==================
+ganache-cli    | 9007199254740991
