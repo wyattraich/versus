@@ -1,8 +1,9 @@
 /* Styles go here */
+br {
+   display: block;
+   margin: -4px;
+}
 
-.token {
-  height: 150px;
-  width: 150px;
-  border-radius: 50%;
-  display: inline-block;
+div {
+	word-wrap: break-word;
 }

@@ -1,254 +1,329 @@
 import React, { Component } from 'react';
+import Navbar from './Navbar'
+import Main from './Main'
+import InProgress from './inProgress'
+import Waiting from './Waiting'
 import Web3 from 'web3'
+import Versus from '../abis/Versus.json'
+import $ from 'jquery'
 import './App.css';
-import MemoryToken from '../abis/MemoryToken.json'
-import brain from '../brain.png'
 
-const CARD_ARRAY = [
-  {
-    name: 'fries',
-    img: '/public/images/fries.png'
-  },
-  {
-    name: 'cheeseburger',
-    img: '/public/images/cheeseburger.png'
-  },
-  {
-    name: 'ice-cream',
-    img: '/public/images/ice-cream.png'
-  },
-  {
-    name: 'pizza',
-    img: '/public/images/pizza.png'
-  },
-  {
-    name: 'milkshake',
-    img: '/images/milkshake.png'
-  },
-  {
-    name: 'hotdog',
-    img: '/images/hotdog.png'
-  },
-  {
-    name: 'fries',
-    img: '/images/fries.png'
-  },
-  {
-    name: 'cheeseburger',
-    img: '/images/cheeseburger.png'
-  },
-  {
-    name: 'ice-cream',
-    img: '/images/ice-cream.png'
-  },
-  {
-    name: 'pizza',
-    img: '/public/images/pizza.png'
-  },
-  {
-    name: 'milkshake',
-    img: '/public/images/milkshake.png'
-  },
-  {
-    name: 'hotdog',
-    img: '/public/images/hotdog.png'
-  }
-]
+//TODO if player has an open game, wait and listen for event where 
+//someone joins their open game and it becomes in progress, then show links
+//TODO wait for events of new games and refresh each time a new game is added
+//TODO if player logs out with pending game, cancel it and refund
 
 class App extends Component {
 
   async componentWillMount() {
     await this.loadWeb3()
-    await this.loadBlockchainData()
-    this.setState({ cardArray: CARD_ARRAY.sort(() => 0.5 - Math.random()) })
+    await this.getPendingGames()
   }
 
+  /** !UPDATE **/
   async loadWeb3() {
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum)
-      await window.ethereum.enable()
-    }
-    else if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider)
-    }
-    else {
-      window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-    }
-  }
+    if(typeof window.ethereum!=='undefined' && !this.state.wrongNetwork){
+      let accounts, network, balance, web3, playerBalance, contract, contract_abi, contract_address
 
-  async loadBlockchainData() {
-    const web3 = window.web3
-    const accounts = await web3.eth.getAccounts()
-    this.setState({ account: accounts[0] })
+      //don't refresh DApp when user change the network
+      window.ethereum.autoRefreshOnNetworkChange = false;
 
-    // Load smart contract
-    const networkId = await web3.eth.net.getId()
-    console.log(networkId)
-    const networkData = MemoryToken.networks[networkId]
-    if(networkData) {
-      const abi = MemoryToken.abi
-      const address = networkData.address
-      const token = new web3.eth.Contract(abi, address)
-      this.setState({ token })
-      const totalSupply = await token.methods.totalSupply().call()
-      this.setState({ totalSupply })
-      // Load Tokens
-      let balanceOf = await token.methods.balanceOf(accounts[0]).call()
-      for (let i = 0; i < balanceOf; i++) {
-        let id = await token.methods.tokenOfOwnerByIndex(accounts[0], i).call()
-        let tokenURI = await token.methods.tokenURI(id).call()
-        this.setState({
-          tokenURIs: [...this.state.tokenURIs, tokenURI]
-        })
+      //USE THIS WHEN DEPLOYING ON REAL NET
+      //web3 = new Web3(window.ethereum)
+      //this.setState({web3: web3})
+
+      //contract_abi = [{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "sender","type": "address"},{"indexed": false,"internalType": "uint256","name": "amount","type": "uint256"}],"name": "Received","type": "event"},{"anonymous": false,"inputs": [{"indexed": false,"internalType": "uint256","name": "id","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "bet","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "randomSeed","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "amount","type": "uint256"},{"indexed": false,"internalType": "address","name": "player","type": "address"},{"indexed": false,"internalType": "uint256","name": "winAmount","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "randomResult","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "time","type": "uint256"}],"name": "Result","type": "event"},{"anonymous": false,"inputs": [{"indexed": false,"internalType": "address","name": "admin","type": "address"},{"indexed": false,"internalType": "uint256","name": "amount","type": "uint256"}],"name": "Withdraw","type": "event"},{"inputs": [{"internalType": "uint256","name": "bet","type": "uint256"},{"internalType": "uint256","name": "seed","type": "uint256"}],"name": "game","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "payable","type": "function"},{"inputs": [{"internalType": "bytes32","name": "requestId","type": "bytes32"},{"internalType": "uint256","name": "randomness","type": "uint256"}],"name": "rawFulfillRandomness","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "bytes32","name": "_keyHash","type": "bytes32"},{"internalType": "uint256","name": "_fee","type": "uint256"},{"internalType": "uint256","name": "_seed","type": "uint256"}],"name": "requestRandomness","outputs": [{"internalType": "bytes32","name": "requestId","type": "bytes32"}],"stateMutability": "nonpayable","type": "function"},{"stateMutability": "payable","type": "receive"},{"inputs": [{"internalType": "uint256","name": "random","type": "uint256"}],"name": "verdict","outputs": [],"stateMutability": "payable","type": "function"},{"inputs": [{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "withdrawEther","outputs": [],"stateMutability": "payable","type": "function"},{"inputs": [{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "withdrawLink","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"stateMutability": "nonpayable","type": "constructor"},{"inputs": [],"name": "admin","outputs": [{"internalType": "address payable","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "ethInUsd","outputs": [{"internalType": "int256","name": "","type": "int256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "gameId","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "","type": "uint256"}],"name": "games","outputs": [{"internalType": "uint256","name": "id","type": "uint256"},{"internalType": "uint256","name": "bet","type": "uint256"},{"internalType": "uint256","name": "seed","type": "uint256"},{"internalType": "uint256","name": "amount","type": "uint256"},{"internalType": "address payable","name": "player","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "lastGameId","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "bytes32","name": "","type": "bytes32"}],"name": "nonces","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "randomResult","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "weiInUsd","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"}]
+      //contract_address = '0x2FeF79F6b8777D4C13E2D7be422628A5B458b7ad' //rinkeby
+      //contract = new web3.eth.Contract(contract_abi, contract_address);
+
+      //INITIALIZE CONTRACT FROM GANACHE ***********************
+      if (window.ethereum) {
+        window.web3 = new Web3(window.ethereum)
+        await window.ethereum.enable()
       }
-    } else {
-      alert('Smart contract not deployed to detected network.')
-    }
-  }
+      else if (window.web3) {
+        window.web3 = new Web3(window.web3.currentProvider)
+      }
+      else {
+        window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+      }
+      web3 = window.web3
+      const networkId = await web3.eth.net.getId()
+      const networkData = Versus.networks[networkId]
+      if(networkData) {
+        const abi = Versus.abi
+        const address = networkData.address
+        contract = new web3.eth.Contract(abi, address)
+      }
+      //*********************************************
 
-  chooseImage = (cardId) => {
-    cardId = cardId.toString()
-    if(this.state.cardsWon.includes(cardId)) {
-      return window.location.origin + '/images/white.png'
-    }
-    else if(this.state.cardsChosenId.includes(cardId)) {
-      return CARD_ARRAY[cardId].img
-    } else {
-      return window.location.origin + '/images/blank.png'
-    }
-  }
-
-  flipCard = async (cardId) => {
-    let alreadyChosen = this.state.cardsChosen.length
-
-    this.setState({
-      cardsChosen: [...this.state.cardsChosen, this.state.cardArray[cardId].name],
-      cardsChosenId: [...this.state.cardsChosenId, cardId]
-    })
-
-    if (alreadyChosen === 1) {
-      setTimeout(this.checkForMatch, 100)
-    }
-  }
-
-
-  checkForMatch = async () => {
-    const optionOneId = this.state.cardsChosenId[0]
-    const optionTwoId = this.state.cardsChosenId[1]
-
-    if(optionOneId === optionTwoId) {
-      alert('You have clicked the same image!')
-    } else if (this.state.cardsChosen[0] === this.state.cardsChosen[1]) {
-      alert('You found a match')
-      this.state.token.methods.mint(
-        this.state.account,
-        window.location.origin + CARD_ARRAY[optionOneId].img.toString()
-      )
-      .send({ from: this.state.account })
-      .on('transactionHash', (hash) => {
-        this.setState({
-          cardsWon: [...this.state.cardsWon, optionOneId, optionTwoId],
-          tokenURIs: [...this.state.tokenURIs, CARD_ARRAY[optionOneId].img]
-        })
+      this.setState({
+        contract: contract,
+        contractAddress: contract_address,
+        web3: web3
       })
+
+      accounts = await web3.eth.getAccounts()
+
+      //Update the data when user initially connect
+      if(typeof accounts[0]!=='undefined' && accounts[0]!==null) {
+        console.log("load web3 initial connection")
+        balance = await web3.eth.getBalance(accounts[0])
+        playerBalance = await contract.methods.getPlayerBalance(accounts[0]).call()
+        this.setState({account: accounts[0],pageState: "Main", balance: balance, playerBalance: playerBalance})
+      }
+
+      //Update account&balance when user change the account
+      window.ethereum.on('accountsChanged', async (accounts) => {
+        console.log("load web3 accounts changed")
+        if(typeof accounts[0] !== 'undefined'  && accounts[0]!==null){
+          console.log("account valid")
+          balance = await web3.eth.getBalance(accounts[0])
+          playerBalance = await contract.getPlayerBalance(accounts[0]).call()
+          this.setState({account: accounts[0], pageState: "Main", balance: balance, playerBalance: playerBalance})
+        } else {
+          console.log("account invalid")
+          this.setState({account: null, balance: 0})
+        }
+      });
+
+      //Update data when user switch the network
+      window.ethereum.on('chainChanged', async (chainId) => {
+        console.log("load web3 network changed")
+        network = parseInt(chainId, 16)
+        if(network!==4){
+          this.setState({wrongNetwork: true})
+        } else {
+          if(this.state.account){
+            balance = await this.state.web3.eth.getBalance(this.state.account)
+            playerBalance = await this.state.contract.getPlayerBalance.call(accounts[0])
+
+            this.setState({ balance: balance, playerBalance: playerBalance })
+          }
+          this.setState({ network: network, pageState: "Main", onlyNetwork: false, wrongNetwork: false})
+        }
+      });
+    }
+  }
+
+  listenForEvents() {
+    this.state.contract.Election.deployed().then(function(instance) {
+      // Restart Chrome if you are unable to receive this event
+      // This is a known issue with Metamask
+      // https://github.com/MetaMask/metamask-extension/issues/2393
+      instance.NewGame({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        console.log("event triggered", event)
+        // Reload when a new vote is recorded
+        this.state.render();
+      });
+
+      instance.NewGame({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        console.log("event triggered", event)
+        // Reload when a new vote is recorded
+        this.state.render();
+      });
+    });
+  }
+
+  async newGame(amount) {
+    //UNCOMMENT FOR REAL NET
+    //const networkId = await this.state.web3.eth.net.getId()
+    //if(networkId!==4) {
+    //  this.setState({wrongNetwork: true})
+    //} else
+
+    if(typeof this.state.account !=='undefined' && this.state.account !==null){
+      //Send new game to the contract and wait for someone to join
+      let wagerInWei = await this.state.web3.utils.toWei(amount.toString(), 'ether')
+      console.log(wagerInWei)
+      this.state.contract.methods.newGame(amount).send({from: this.state.account}).on('transactionHash', (hash) => {
+        this.setState({pageState: "Waiting", pendingGameAmount: amount})
+        console.log(this.state.pageState)
+      });
+
+
+      //in waiting wait for join event, have cancel option for pending game
+      //when in progress switch to in progress and display link for each player
+      //have finish game button that can be selected by either user but will not execute
+      //until we get a successful api response about who won game or if it was cancelled
+      //before starting
+
+      //refresh balances and pending games
+      //let balance = await this.state.web3.eth.getBalance(this.state.account)
+      //let playerBalance = await this.state.contract.methods.getPlayerBalance(this.state.account).call()
+      //this.setState({ balance: balance, playerBalance: playerBalance })
+      //this.getPendingGames()
+
+        /*this.state.contract.methods.game(bet, randomSeed).send({from: this.state.account, value: amount}).on('transactionHash', (hash) => {
+          this.setState({ loading: true })
+          this.state.contract.events.Result({}, async (error, event) => {
+            const verdict = event.returnValues.winAmount
+            if(verdict === '0') {
+              window.alert('lose :(')
+            } else {
+              window.alert('WIN!')
+            }
+
+          //Prevent error when user logout, while waiting for the verdict
+          if(this.state.account!==null && typeof this.state.account!=='undefined'){
+            const balance = await this.state.web3.eth.getBalance(this.state.account)
+            const playerBalance = await this.state.web3.eth.getBalance(this.state.contractAddress)
+            this.setState({ balance: balance, playerBalance: playerBalance })
+          }
+          this.setState({ loading: false })
+        })
+      }).on('error', (error) => {
+        window.alert('Error')
+      })*/
     } else {
-      alert('Sorry, try again')
+      window.alert('Problem with account or network')
     }
-    this.setState({
-      cardsChosen: [],
-      cardsChosenId: []
-    })
-    if (this.state.cardsWon.length === CARD_ARRAY.length) {
-      alert('Congratulations! You found them all!')
+  }
+
+  async joinGame(id) {
+    //UNCOMMENT FOR REAL NET
+    //const networkId = await this.state.web3.eth.net.getId()
+    //if(networkId!==4) {
+    //  this.setState({wrongNetwork: true})
+    //} else
+
+    if(typeof this.state.account !=='undefined' && this.state.account !==null){
+      //Send new game to the contract and wait for someone to join
+      console.log(id)
+      await this.state.contract.methods.joinGame(id).send({from: this.state.account})
+
+      const {0: amount2,1:player12,2:link12,3:player22,4:link22,5:isValid2} = await this.state.contract.methods.getinProgressGameFields.call(this.state.account)
+      console.log(this.state.account,amount2,player12,link12,player22,link22,isValid2)
+      this.setState({pageState: "inProgress"})
+
+      if(this.state.account === player12){
+        this.setState({link: link12})
+      }else{
+        this.setState({link: link22})
+      }
+
+    } else {
+      window.alert('Problem with account or network')
     }
+  }
+
+  async getPendingGames() {
+    var pendingGames = $("#pendingGames");
+    pendingGames.empty();
+
+    let numPendingGames = await this.state.contract.methods.getPendingGameId().call()
+    //console.log(Number(numPendingGames))
+    for (var i = 1; i <= Number(numPendingGames); i++){
+      const {0: id, 1: amount, 2: player, 3:isValid} = await this.state.contract.methods.getPendingGameFields(i).call()
+      //console.log(i, id, amount, player, isValid)
+      let amountEth = await this.state.web3.utils.fromWei(amount.toString(), 'ether')
+      // Render candidate Result
+      if(isValid){
+        var pendingGameTemplate = "<tr><td id='id'>" + id + "</td><td id='player'>" + player.toString().substring(0,5) + "..." + player.toString().substring(37,43) + "</td><td id='amount'>" + amountEth + "</td><td><button class='btn btn-success btn-lg'> Join Game </button> </td><tr>"
+        pendingGames.append(pendingGameTemplate);
+      }
+    }
+
+    //TODO: CHANGE TO PROXY FUNCTION OR BIND, this is hacky
+    var self = this;
+    pendingGames.on("click",".btn",function(ev){
+      var retval = $(ev.target).closest('tr').find('#id').text()
+      var playerJoin = $(ev.target).closest('tr').find('#player').text()
+      var amount = $(ev.target).closest('tr').find('#amount').text()
+      self.joinGame(retval)
+      console.log(retval, playerJoin ,amount)
+    });
+  }
+
+  async getPendingGamesNoJoin() {
+    var pendingGames = $("#pendingGamesNoJoin");
+    pendingGames.empty();
+
+    let numPendingGames = await this.state.contract.methods.getPendingGameId().call()
+    //console.log(Number(numPendingGames))
+    for (var i = 1; i <= Number(numPendingGames); i++){
+      const {0: id, 1: amount, 2: player, 3:isValid} = await this.state.contract.methods.getPendingGameFields(i).call()
+      //console.log(i, id, amount, player, isValid)
+      let amountEth = await this.state.web3.utils.fromWei(amount.toString(), 'ether')
+      // Render candidate Result
+      if(isValid){
+        var pendingGameTemplate = "<tr><td id='id'>" + id + "</td><td id='player'>" + player.toString().substring(0,5) + "..." + player.toString().substring(37,43) + "</td><td id='amount'>" + amountEth + "</td><tr>"
+        pendingGames.append(pendingGameTemplate);
+      }
+    }
+  }
+
+  onChange(value) {
+    this.setState({'amount': value});
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      account: '0x0',
-      token: null,
-      totalSupply: 0,
-      tokenURIs: [],
-      cardArray: [],
-      cardsChosen: [],
-      cardsChosenId: [],
-      cardsWon: []
+      account: null,
+      amount: null,
+      balance: null,
+      contract: null,
+      event: null,
+      pageState: null,
+      network: null,
+      playerBalance: 0,
+      web3: null,
+      wrongNetwork: false,
+      contractAddress: null,
+      pendingGameAmount: null
     }
+
+    this.makeGame = this.newGame.bind(this)
+    this.joinGame = this.joinGame.bind(this)
+    this.getPendingGames = this.getPendingGames.bind(this)
+    this.getPendingGamesNoJoin = this.getPendingGamesNoJoin.bind(this)
+    this.setState = this.setState.bind(this)
+    this.onChange = this.onChange.bind(this)
   }
 
   render() {
+    console.log("rendering")
+    console.log(this.state.pageState)
     return (
       <div>
-        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-          <a
-            className="navbar-brand col-sm-3 col-md-2 mr-0"
-            href="http://www.dappuniversity.com/bootcamp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-          <img src={brain} width="30" height="30" className="d-inline-block align-top" alt="" />
-          &nbsp; Memory Tokens
-          </a>
-          <ul className="navbar-nav px-3">
-            <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
-              <small className="text-muted"><span id="account">{this.state.account}</span></small>
-            </li>
-          </ul>
-        </nav>
-        <div className="container-fluid mt-5">
-          <div className="row">
-            <main role="main" className="col-lg-12 d-flex text-center">
+        <Navbar account={this.state.account}/>&nbsp;
+        {this.state.wrongNetwork
+          ? <div className="container-fluid mt-5 text-monospace text-center mr-auto ml-auto">
               <div className="content mr-auto ml-auto">
-                <h1 className="d-4">Start matching now!</h1>
-
-                <div className="grid mb-4" >
-
-                  { this.state.cardArray.map((card, key) => {
-                    return(
-                      <img
-                        key={key}
-                        src={this.chooseImage(key)}
-                        data-id={key}
-                        alt=""
-                        onClick={(event) => {
-                          let cardId = event.target.getAttribute('data-id')
-                          if(!this.state.cardsWon.includes(cardId.toString())) {
-                            this.flipCard(cardId)
-                          }
-                        }}
-                      />
-                    )
-                  })}
-
-
-                </div>
-
-                <div>
-
-                  <h5>Tokens Collected:<span id="result">&nbsp;{this.state.tokenURIs.length}</span></h5>
-
-                  <div className="grid mb-4" >
-
-                    { this.state.tokenURIs.map((tokenURI, key) => {
-                      return(
-                        <img
-                          key={key}
-                          src={tokenURI}
-                          alt=""
-                        />
-                      )
-                    })}
-
-                  </div>
-
-                </div>
-
+                <h1>Please Enter Rinkeby Network</h1>
               </div>
-
-            </main>
-          </div>
-        </div>
+            </div>
+          : this.state.pageState === 'Waiting'
+              ? <Waiting
+                balance={this.state.balance}
+                playerBalance={this.state.playerBalance}
+                getPendingGames={this.getPendingGamesNoJoin}
+                web3={this.state.web3}
+                pendingGameAmount={this.state.pendingGameAmount}
+                />
+              : this.state.pageState === 'Main'
+                ? <Main
+                    amount={this.state.amount}
+                    balance={this.state.balance}
+                    makeGame={this.makeGame}
+                    getPendingGames={this.getPendingGames}
+                    onChange={this.onChange}
+                    playerBalance={this.state.playerBalance}
+                    web3={this.state.web3}
+                  />
+                :
+                  <InProgress
+                    web3={this.state.web3}
+                    link={this.state.link}
+                  />
+        }
       </div>
     );
   }

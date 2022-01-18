@@ -1,42 +1,51 @@
-ganache-cli    | Available Accounts
-ganache-cli    | ==================
-ganache-cli    | (0) 0x551A337Dac1C57BFD70d1c52f828dCe74875B0Bc (100 ETH)
-ganache-cli    | (1) 0x245084a432903fC6b9220F09Bc728FB28bBC0baF (100 ETH)
-ganache-cli    | (2) 0x91eb9c67E6aB0c4b18f6d0de82A360A304f395f1 (100 ETH)
-ganache-cli    | (3) 0x1A9E282b0ba69653C91F2b46351b51279C2C0Cf8 (100 ETH)
-ganache-cli    | (4) 0x778A197d1518eAaB517b8c370a0cFe6F0746B05A (100 ETH)
-ganache-cli    | (5) 0x9C699adDd5525c9bEe86323CA91bBc661105C75D (100 ETH)
-ganache-cli    | (6) 0x4AaF86D1F94dA5aC94CBB846BDC18e25Fd09Ee45 (100 ETH)
-ganache-cli    | (7) 0x71bE0beED73A9AB99657113cf8fb25F518b7889f (100 ETH)
-ganache-cli    | (8) 0x992Ae17126d5f1F9E789Ad4183FF90c50436188A (100 ETH)
-ganache-cli    | (9) 0x10F6e1E0895970cBAfaE8D51123349CeB63bFb41 (100 ETH)
-ganache-cli    |
-ganache-cli    | Private Keys
-ganache-cli    | ==================
-ganache-cli    | (0) 0xa80733d8dabbf74ead689d4739a888afe67fc7cc01313649d7aa13e6f42a477a
-ganache-cli    | (1) 0xadd71d0e48b6d6fb4d02556034dc2201e5c69b4ab18dc7544fe13d622cea314c
-ganache-cli    | (2) 0x78040f6d3dc2fc76225a90643ad75ce5b5883a84d9ddda1cd6247eb37bb474f7
-ganache-cli    | (3) 0xf48c3e49532d9fe05ddc87d52e1eff3bd8f54b93d90130f7f3b51487a0de7194
-ganache-cli    | (4) 0xd1cfc58b207f7058cff9606f43b644339e20f4ffaadcf6a0a0f2d076ab60889e
-ganache-cli    | (5) 0x6315a8ab88e930aeb0de3346d5daad1b014e99a67d20751ee83cd5037a587aa6
-ganache-cli    | (6) 0xbf1d4be2aadd4b78d69f806a392aabc387728d8c42c92b52acf6d945609d75e5
-ganache-cli    | (7) 0x0265c19365c7f9d6db403a061d64c32c2757313309f2ece2ade83d70cef04421
-ganache-cli    | (8) 0x91b0a35c51a651ceb382410920ae153ffd4d5e0b6a1358888307eb03ecc34f45
-ganache-cli    | (9) 0x7711c0f256419743ecd7368f545fb3a7a80b7fba7df1df963fad46563d9e2e8a
-ganache-cli    |
-ganache-cli    | HD Wallet
-ganache-cli    | ==================
-ganache-cli    | Mnemonic:      faith trust cushion pelican absurd educate dismiss demand about panda skull amazing
-ganache-cli    | Base HD Path:  m/44'/60'/0'/0/{account_index}
-ganache-cli    |
-ganache-cli    | Gas Price
-ganache-cli    | ==================
-ganache-cli    | 20000000000
-ganache-cli    |
-ganache-cli    | Gas Limit
-ganache-cli    | ==================
-ganache-cli    | 6721975
-ganache-cli    |
-ganache-cli    | Call Gas Limit
-ganache-cli    | ==================
-ganache-cli    | 9007199254740991
+Starting truffle_suite ... done
+Starting ganache-cli   ... done
+Attaching to truffle_suite, ganache-cli
+ganache-cli      | Ganache CLI v6.12.2 (ganache-core: 2.13.2)
+ganache-cli      | (node:1) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+ganache-cli      | (Use `node --trace-deprecation ...` to show where the warning was created)
+ganache-cli      |
+ganache-cli      | Available Accounts
+ganache-cli      | ==================
+ganache-cli      | (0) 0x61cb9193365E5f5B046E20574A050BD7D1A6C2fe (100 ETH)
+ganache-cli      | (1) 0x29f2f879620C6ce244b0D3d09Dd7480EFb5f3294 (100 ETH)
+ganache-cli      | (2) 0x3Fc00Ba4a5BD14ce5eeC3aC93DEa99eb8ab5DF01 (100 ETH)
+ganache-cli      | (3) 0x75a7229a06fD8BD0Bd11381baCb39f75f2A3c0DB (100 ETH)
+ganache-cli      | (4) 0xbAcdEb3e37625Ad709e4f08820CAe497565b321B (100 ETH)
+ganache-cli      | (5) 0x10c6b7F2bA933C511fD0Ec461136E8670dc4695c (100 ETH)
+ganache-cli      | (6) 0x86434C40FcDf4a84f0B1D8621E9B7349267d7573 (100 ETH)
+ganache-cli      | (7) 0xd5D67479401F2F1498D1dB9a9E50e39157Bb7645 (100 ETH)
+ganache-cli      | (8) 0x9A86D6B3A4c63b316f153F678d40eaF16B05680c (100 ETH)
+ganache-cli      | (9) 0xD4AC9683962Fc95ee917B7546bED9bF530498ca0 (100 ETH)
+ganache-cli      |
+ganache-cli      | Private Keys
+ganache-cli      | ==================
+ganache-cli      | (0) 0xad2aff2a06c57f7831886de4bc4ea137ddcabbd181b320ae16b81cca4b9f2006
+ganache-cli      | (1) 0xe3a69c9eff42d511be9f910bffc0c2279551659ec878126a6dfe68fe04bdacca
+ganache-cli      | (2) 0x402842326e70bf1358f59f9a01bd485b1c09e05c213ef6438873f2c3cbf3d806
+ganache-cli      | (3) 0xaa84459e4daf861896bb9adaf8d6f6c86b8a220993afc86e7dba7c78dab0b757
+ganache-cli      | (4) 0x10c3a0bbde29511ed63c0e7e65e40bebabeafa8533b2f6306be82a61b2365819
+ganache-cli      | (5) 0xe7080ff8cf63d28c9832083ef1fd8a939cf0c74d9afb31b1e5febcb0f2f9d944
+ganache-cli      | (6) 0xee637d50a5d6b6ae639dbf60dc55d4ad98e4d5e4ece44ac48e265bc1f7162be0
+ganache-cli      | (7) 0xb2db1ac4ed764c9616911557a79c75f554944d441ee6f66ce9e1772188a56bfe
+ganache-cli      | (8) 0x32c4adb794be63f3b6e02f8bd93b7d132d48f617e54d6cf6712066b5f42eca1a
+ganache-cli      | (9) 0xf33db57f97339f180408af314a73063f133a174e67ad242169477338e1559467
+ganache-cli      |
+ganache-cli      | HD Wallet
+ganache-cli      | ==================
+ganache-cli      | Mnemonic:      ankle wrap you market smooth one grab right humor fortune gap casino
+ganache-cli      | Base HD Path:  m/44'/60'/0'/0/{account_index}
+ganache-cli      |
+ganache-cli      | Gas Price
+ganache-cli      | ==================
+ganache-cli      | 20000000000
+ganache-cli      |
+ganache-cli      | Gas Limit
+ganache-cli      | ==================
+ganache-cli      | 6721975
+ganache-cli      |
+ganache-cli      | Call Gas Limit
+ganache-cli      | ==================
+ganache-cli      | 9007199254740991
+ganache-cli      |
+ganache-cli      | Listening on 0.0.0.0:8545
